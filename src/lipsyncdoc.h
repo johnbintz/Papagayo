@@ -1,7 +1,7 @@
 #ifndef LIPSYNCDOC_H
 #define LIPSYNCDOC_H
 
-#include <QMediaPlayer>
+#include <QtMultimedia/QMediaPlayer>
 
 #include "audioextractor.h"
 
