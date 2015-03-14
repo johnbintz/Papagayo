@@ -40,6 +40,7 @@ private slots:
 	void onFileSaveAs();
 	void onPlay();
 	void onStop();
+    void onVolumeChange(int value);
 	void onFpsChange(QString text);
 	void onNewVoice();
 	void onDeleteVoice();

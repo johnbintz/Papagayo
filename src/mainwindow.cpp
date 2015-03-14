@@ -77,6 +77,7 @@ void MainWindow::OpenFile(QString filePath)
 	{
 		ui->waveformView->SetDocument(fDoc);
 		ui->mouthView->SetDocument(fDoc);
+        fDoc->GetAudioPlayer()->setVolume(ui->volumeSlider->value());
 		fDoc->GetAudioPlayer()->setNotifyInterval(17); // 60 fps
 		connect(fDoc->GetAudioPlayer(), SIGNAL(positionChanged(qint64)), ui->waveformView, SLOT(positionChanged(qint64)));
 
@@ -343,6 +344,12 @@ void MainWindow::onStop()
 {
 	if (fDoc && fDoc->GetAudioPlayer())
 		fDoc->GetAudioPlayer()->stop();
+}
+
+void MainWindow::onVolumeChange(int value)
+{
+    if (fDoc && fDoc->GetAudioPlayer())
+        fDoc->GetAudioPlayer()->setVolume(value);
 }
 
 void MainWindow::onFpsChange(QString text)
