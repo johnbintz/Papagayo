@@ -152,7 +152,7 @@ uint32 AudioExtractor::TimeToSample(real time, bool clamped) const
 			sample--;
 	}
 	if (clamped)
-		return PG_CLAMP(sample, 0, fNumSamples - 1);
+        return PG_CLAMP(sample, 0, fNumSamples - 1);
 	else
 		return sample;
 }

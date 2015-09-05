@@ -194,20 +194,20 @@ void LipsyncVoice::Open(QTextStream &in)
 				word->fText = strList.at(0);
 				word->fStartFrame = strList.at(1).toInt();
 				word->fEndFrame = strList.at(2).toInt();
-				numPhonemes = strList.at(3).toInt();
-			}
-			for (int ph = 0; ph < numPhonemes; ph++)
-			{
-				LipsyncPhoneme *phoneme = new LipsyncPhoneme;
-				str = in.readLine().trimmed();
-				QStringList strList = str.split(' ', QString::SkipEmptyParts);
-				if (strList.size() >= 2)
-				{
-					phoneme->fFrame = strList.at(0).toInt();
-					phoneme->fText = strList.at(1);
-				}
-				word->fPhonemes << phoneme;
-			} // for ph
+                numPhonemes = strList.at(3).toInt();
+                for (int ph = 0; ph < numPhonemes; ph++)
+                {
+                    LipsyncPhoneme *phoneme = new LipsyncPhoneme;
+                    str = in.readLine().trimmed();
+                    QStringList strList = str.split(' ', QString::SkipEmptyParts);
+                    if (strList.size() >= 2)
+                    {
+                        phoneme->fFrame = strList.at(0).toInt();
+                        phoneme->fText = strList.at(1);
+                    }
+                    word->fPhonemes << phoneme;
+                } // for ph
+            }
 			phrase->fWords << word;
 		} // for w
 		fPhrases << phrase;
