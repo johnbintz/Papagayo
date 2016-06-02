@@ -30,8 +30,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>542</width>
-           <height>194</height>
+           <width>566</width>
+           <height>234</height>
           </rect>
          </property>
         </widget>
@@ -135,7 +135,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_2">
+            <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -146,6 +146,37 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Suffix:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radNone">
+             <property name="text">
+              <string>None</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radPng">
+             <property name="text">
+              <string>.png</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radGif">
+             <property name="text">
+              <string>.gif</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QComboBox" name="exportChoice">
@@ -355,7 +386,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -386,6 +417,9 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="toolTip">
+    <string>Phrase/Word Repeat</string>
+   </property>
    <property name="movable">
     <bool>true</bool>
    </property>
@@ -412,6 +446,7 @@
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
    <addaction name="actionStop"/>
+   <addaction name="actionRepeat"/>
    <addaction name="separator"/>
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
@@ -545,6 +580,19 @@
    </property>
    <property name="toolTip">
     <string>About Papagayo</string>
+   </property>
+  </action>
+  <action name="actionRepeat">
+   <property name="icon">
+    <iconset resource="../rsrc/papagayo.qrc">
+     <normaloff>:/images/images/repeat.png</normaloff>
+     <normalon>:/images/images/repeat_on.png</normalon>:/images/images/repeat.png</iconset>
+   </property>
+   <property name="text">
+    <string>Repeat</string>
+   </property>
+   <property name="toolTip">
+    <string>Phrase/Word Repeat</string>
    </property>
   </action>
  </widget>

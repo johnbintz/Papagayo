@@ -18,18 +18,21 @@ SOURCES += src/main.cpp \
     src/waveformview.cpp \
     src/mouthview.cpp \
     src/audioextractor.cpp \
-    src/breakdowndialog.cpp
+    src/breakdowndialog.cpp \
+    src/mooddialog.cpp
 
 INCLUDEPATH += src
 
 win32 {
 
-INCLUDEPATH += libsndfile_1.0.25/Win32/include
+INCLUDEPATH += libsndfile_1.0.25/x64/include
 
-LIBS += -LC:\Users\mclifton\Documents\QtDevelopment\Papagayo\libsndfile_1.0.25\Win32\lib -llibsndfile-1
+LIBS += -LG:\dev\git\Papagayo\libsndfile_1.0.25\x64\lib -llibsndfile-1
+#LIBS += -LC:\Users\mclifton\Documents\QtDevelopment\Papagayo\libsndfile_1.0.25\Win32\lib -llibsndfile-1
 #LIBS += -Llibsndfile_1.0.25\Win32\lib -llibsndfile-1
 
-MY_DLL_FILES += LC:\Users\mclifton\Documents\QtDevelopment\Papagayo\libsndfile_1.0.25\Win32\bin\libsndfile-1.dll
+#MY_DLL_FILES += LC:\Users\mclifton\Documents\QtDevelopment\Papagayo\libsndfile_1.0.25\Win32\bin\libsndfile-1.dll
+MY_DLL_FILES += LG:\dev\git\Papagayo\libsndfile_1.0.25\x64\bin\libsndfile-1.dll
 
 } else {
 
@@ -132,10 +135,12 @@ HEADERS += src/mainwindow.h \
     src/audioextractor.h \
     src/mouthview.h \
     src/pg_config.h \
-    src/breakdowndialog.h
+    src/breakdowndialog.h \
+    src/mooddialog.h
 
 FORMS += src/mainwindow.ui \
-    src/breakdowndialog.ui
+    src/breakdowndialog.ui \
+    src/mooddialog.ui
 
 OTHER_FILES += \
     ToDo.txt
@@ -150,6 +155,9 @@ QMAKE_INFO_PLIST = mac/Info.plist
 RC_FILE = win/papagayo.rc
 
 OBJECTIVE_SOURCES +=
+
+# just testing
+DESTDIR += g:\devtest
 
 extra_libs.files = MY_DLL_FILES
 extra_libs.path = $$DESTDIR

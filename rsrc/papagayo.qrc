@@ -9,6 +9,8 @@
         <file>images/zoom_in.png</file>
         <file>images/zoom_out.png</file>
         <file>images/papagayo.png</file>
+        <file>images/repeat.png</file>
+        <file>images/repeat_on.png</file>
     </qresource>
     <qresource prefix="/dictionaries">
         <file>dictionaries/extended_dictionary</file>

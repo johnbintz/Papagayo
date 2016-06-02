@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "qmediaplayer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	fDoc = NULL;
 	fEnableAutoBreakdown = true;
 	fDefaultFps = 24;
+    fRebuildingList = false; //peo
 
 	ui->setupUi(this);
 
@@ -23,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionAutoZoom, SIGNAL(triggered()), ui->waveformView, SLOT(onAutoZoom()));
 	connect(ui->fpsEdit, SIGNAL(textChanged(QString)), this, SLOT(onFpsChange(QString)));
 	connect(ui->waveformView, SIGNAL(frameChanged(int)), ui->mouthView, SLOT(onFrameChanged(int)));
+    connect(ui->radNone, SIGNAL(clicked(bool)), this, SLOT(onNone()));
+    connect(ui->radPng, SIGNAL(clicked(bool)), this, SLOT(onPng()));
+    connect(ui->radGif, SIGNAL(clicked(bool)), this, SLOT(onGif()));
+    connect(ui->actionRepeat, SIGNAL(triggered()), this, SLOT(onRepeat()));
 
 	RestoreSettings();
 	updateActions();
@@ -194,6 +200,17 @@ void MainWindow::dropEvent(QDropEvent *event)
 	}
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    // start/stop playing if pressing spacebar
+    if (event->key() == Qt::Key_Space) {
+        if (fDoc->GetAudioPlayer()->state() == 1) // playing
+            MainWindow::onStop();
+        else // assuming 0 not playing
+            MainWindow::onPlay();
+    }
+}
+
 void MainWindow::updateActions()
 {
 	if (fDoc)
@@ -205,6 +222,7 @@ void MainWindow::updateActions()
 		ui->actionZoomIn->setEnabled(true);
 		ui->actionZoomOut->setEnabled(true);
 		ui->actionAutoZoom->setEnabled(true);
+        ui->actionRepeat->setEnabled(true);
 
 		ui->voiceName->setEnabled(true);
 		ui->voiceText->setEnabled(true);
@@ -214,8 +232,11 @@ void MainWindow::updateActions()
 		ui->exportButton->setEnabled(fDoc->fCurrentVoice && !fDoc->fCurrentVoice->fText.isEmpty());
 		ui->fpsEdit->setEnabled(true);
 		ui->voiceList->setEnabled(true);
-		ui->newVoiceButton->setEnabled(true);
+        ui->newVoiceButton->setEnabled(true);
 		ui->deleteVoiceButton->setEnabled(fDoc->fCurrentVoice && fDoc->fVoices.size() > 1);
+        ui->radNone->setEnabled(true);
+        ui->radPng->setEnabled(true);
+        ui->radGif->setEnabled(true);
 	}
 	else
 	{
@@ -226,6 +247,7 @@ void MainWindow::updateActions()
 		ui->actionZoomIn->setEnabled(false);
 		ui->actionZoomOut->setEnabled(false);
 		ui->actionAutoZoom->setEnabled(false);
+        ui->actionRepeat->setEnabled(false);
 
 		ui->voiceName->setEnabled(false);
 		ui->voiceText->setEnabled(false);
@@ -237,6 +259,9 @@ void MainWindow::updateActions()
 		ui->voiceList->setEnabled(false);
 		ui->newVoiceButton->setEnabled(false);
 		ui->deleteVoiceButton->setEnabled(false);
+        ui->radNone->setEnabled(false);
+        ui->radPng->setEnabled(false);
+        ui->radGif->setEnabled(false);
 	}
 }
 
@@ -326,14 +351,43 @@ void MainWindow::onFileSaveAs()
 
 void MainWindow::onPlay()
 {
-	if (fDoc && fDoc->GetAudioPlayer())
-		fDoc->GetAudioPlayer()->play();
+    if (fDoc->fRepeat)
+    {
+        // figure out what to play
+        if (fDoc->fRepeatPhrase || fDoc->fRepeatWord)
+        {
+            ui->waveformView->playRepeatSegment();
+            return;
+        }
+    }
+    if (fDoc && fDoc->GetAudioPlayer()) // play it all
+    {
+        fDoc->GetAudioPlayer()->play();
+    }
+
 }
 
 void MainWindow::onStop()
 {
-	if (fDoc && fDoc->GetAudioPlayer())
+    if (fDoc && fDoc->GetAudioPlayer())
+    {
 		fDoc->GetAudioPlayer()->stop();
+    }
+}
+
+void MainWindow::onRepeat()
+{
+    if (fDoc->fRepeat) {
+        fDoc->fRepeat = false;
+        fDoc->fRepeatPhrase = NULL;
+        fDoc->fRepeatWord = NULL;
+        ui->actionRepeat->setIcon(QIcon(":/images/images/repeat.png"));
+    }
+    else
+    {
+        fDoc->fRepeat = true;
+        ui->actionRepeat->setIcon(QIcon(":/images/images/repeat_on.png"));
+    }
 }
 
 void MainWindow::onFpsChange(QString text)
@@ -487,7 +541,22 @@ void MainWindow::onExport()
 	QFileInfo info(filePath);
 	settings.setValue("default_dir", info.dir().absolutePath());
 
-	fDoc->fCurrentVoice->Export(filePath);
+    fDoc->fCurrentVoice->Export(filePath, fDoc->fImageSuffix);
+}
+
+void MainWindow::onNone()
+{
+    fDoc->fImageSuffix = "";
+}
+
+void MainWindow::onPng()
+{
+    fDoc->fImageSuffix = ".png";
+}
+
+void MainWindow::onGif()
+{
+    fDoc->fImageSuffix = ".gif";
 }
 
 void MainWindow::RebuildVoiceList()

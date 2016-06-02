@@ -17,6 +17,7 @@ public:
 
 	void SetScrollArea(QScrollArea *scrollArea);
 	void SetDocument(LipsyncDoc *doc);
+    void playSegment(LipsyncPhrase *fPhrase, LipsyncWord *fWord, LipsyncPhoneme *fPhoneme, int32 fScrubFrame);
 
 signals:
 	void frameChanged(int);
@@ -27,12 +28,15 @@ public slots:
 	void onAutoZoom();
 	void positionChanged(qint64 milliseconds);
 
+    void playRepeatSegment();
+
 protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *event);
+
 
 private:
 	QScrollArea	*fScrollArea;

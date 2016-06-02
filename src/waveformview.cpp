@@ -3,8 +3,11 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
+
 #include "waveformview.h"
 #include "breakdowndialog.h"
+#include "mooddialog.h"
+#include "qmessagebox.h"
 
 #define DEFAULT_SAMPLE_WIDTH		4
 #define DEFAULT_SAMPLES_PER_FRAME	2
@@ -289,6 +292,21 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 				}
 			}
 
+            // peo
+            if (fDoc->fRepeat)
+            {
+                if (mouseY >= fSelectedPhrase->fTop && mouseY <= fSelectedPhrase->fBottom)  // we clicked on a phrase
+                {
+                    fDoc->fRepeatPhrase = fSelectedPhrase;
+                    fDoc->fRepeatWord = NULL;
+                }
+                if (fSelectedWord && mouseY >= fSelectedWord->fTop && mouseY <= fSelectedWord->fBottom)
+                {
+                    fDoc->fRepeatWord = fSelectedWord;
+                    fDoc->fRepeatPhrase = NULL;
+                }
+            }
+
 			fParentPhrase = fSelectedPhrase;
 			fParentWord = fSelectedWord;
 
@@ -350,38 +368,8 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 			}
 			else if (fDoubleClick)
 			{
-				bool playSegment = false;
-				QMediaPlayer *audioPlayer = fDoc->GetAudioPlayer();
-				int32 startFrame;
-				fAudioStopFrame = -1;
-				if (audioPlayer)
-				{
-					if (fSelectedPhrase)
-					{
-						playSegment = true;
-						startFrame = fSelectedPhrase->fStartFrame;
-						fAudioStopFrame = fSelectedPhrase->fEndFrame + 1;
-					}
-					else if (fSelectedWord)
-					{
-						playSegment = true;
-						startFrame = fSelectedWord->fStartFrame;
-						fAudioStopFrame = fSelectedWord->fEndFrame + 1;
-					}
-					else if (fSelectedPhoneme)
-					{
-						playSegment = true;
-						startFrame = fSelectedPhoneme->fFrame;
-						fAudioStopFrame = startFrame + 1;
-					}
-					if (playSegment)
-					{
-						float f = ((real)startFrame / (real)fDoc->Fps()) * 1000.0f;
-						audioPlayer->setPosition(PG_ROUND(f));
-						audioPlayer->play();
-						emit(frameChanged(fScrubFrame));
-					}
-				}
+                playSegment(fSelectedPhrase, fSelectedWord, fSelectedPhoneme, fScrubFrame);
+
 				fDragging = false;
 				fDraggingEnd = -1;
 				fSelectedPhrase = NULL;
@@ -390,6 +378,47 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 			}
 		}
 	}
+}
+
+void WaveformView::playSegment(LipsyncPhrase *fPhrase, LipsyncWord *fWord, LipsyncPhoneme *fPhoneme, int32 fScrubFrame)
+{
+    bool playSegment = false;
+    QMediaPlayer *audioPlayer = fDoc->GetAudioPlayer();
+    int32 startFrame;
+    fAudioStopFrame = -1;
+    if (audioPlayer)
+    {
+        if (fPhrase)
+        {
+            playSegment = true;
+            startFrame = fPhrase->fStartFrame;
+            fAudioStopFrame = fPhrase->fEndFrame + 1;
+        }
+        else if (fWord)
+        {
+            playSegment = true;
+            startFrame = fWord->fStartFrame;
+            fAudioStopFrame = fWord->fEndFrame + 1;
+        }
+        else if (fPhoneme)
+        {
+            playSegment = true;
+            startFrame = fPhoneme->fFrame;
+            fAudioStopFrame = startFrame + 1;
+        }
+        if (playSegment)
+        {
+            float f = ((real)startFrame / (real)fDoc->Fps()) * 1000.0f;
+            audioPlayer->setPosition(PG_ROUND(f));
+            audioPlayer->play();
+            emit(frameChanged(fScrubFrame));
+        }
+    }
+}
+
+void WaveformView::playRepeatSegment()
+{
+    WaveformView::playSegment(fDoc->fRepeatPhrase, fDoc->fRepeatWord, NULL, -1)    ;
 }
 
 void WaveformView::mouseDoubleClickEvent(QMouseEvent *event)
@@ -521,8 +550,19 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 
 void WaveformView::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (fDoc && fDoc->GetAudioPlayer() && fAudioStopFrame < 0)
+    if (fDoc && fDoc->GetAudioPlayer() && fAudioStopFrame < 0)
 		fDoc->GetAudioPlayer()->stop();
+
+    if (event->button() == Qt::RightButton && fSelectedPhrase)
+    {
+        // determine the mood for this sentence
+        MoodDialog *dlog = new MoodDialog(this);
+        if (dlog->exec() == QDialog::Accepted)
+        {
+            fSelectedPhrase->fMood = dlog->MoodString();
+        }
+        delete dlog;
+    }
 	if (event->button() == Qt::RightButton && fSelectedWord)
 	{
 		// manually enter the pronunciation for this word
