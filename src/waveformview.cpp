@@ -292,7 +292,6 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 				}
 			}
 
-            // peo
             if (fDoc->fRepeat)
             {
                 if (mouseY >= fSelectedPhrase->fTop && mouseY <= fSelectedPhrase->fBottom)  // we clicked on a phrase

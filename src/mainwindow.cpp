@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	fDoc = NULL;
 	fEnableAutoBreakdown = true;
 	fDefaultFps = 24;
-    fRebuildingList = false; //peo
+    fRebuildingList = false;
 
 	ui->setupUi(this);
 
@@ -351,7 +351,7 @@ void MainWindow::onFileSaveAs()
 
 void MainWindow::onPlay()
 {
-    if (fDoc->fRepeat)
+    if (fDoc && fDoc->fRepeat)
     {
         // figure out what to play
         if (fDoc->fRepeatPhrase || fDoc->fRepeatWord)
