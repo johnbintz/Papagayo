@@ -29,7 +29,7 @@ protected:
 	void closeEvent(QCloseEvent *event);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
-    void keyPressEvent(QKeyEvent *event); //peo
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
 	void updateActions();

@@ -58,7 +58,7 @@ void MainWindow::OpenFile(QString filePath)
 	else
 	{
 		fDoc->OpenAudio(filePath);
-		fDoc->SetFps(fDefaultFps);
+        fDoc->SetFps(fDefaultFps);
 	}
 
 	if (fDoc->GetAudioPlayer() == NULL)
@@ -89,6 +89,8 @@ void MainWindow::OpenFile(QString filePath)
 	}
 
 	ui->fpsEdit->setText(QString::number(fDoc->Fps()));
+    ui->radNone->setChecked(true);
+    ui->actionRepeat->setIcon(QIcon(":/images/images/repeat.png"));
 	updateActions();
 }
 
@@ -175,7 +177,6 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 	QFileInfo info(filePath);
 	QString extn = info.suffix().toLower();
-	if (extn == "wav" || extn == "pgo" || extn == "aif" || extn == "aiff")
 		event->acceptProposedAction();
 }
 
@@ -192,7 +193,6 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 	QFileInfo info(filePath);
 	QString extn = info.suffix().toLower();
-	if (extn == "wav" || extn == "pgo" || extn == "aif" || extn == "aiff")
 	{
 		event->acceptProposedAction();
 		if (IsOKToCloseDocument())
