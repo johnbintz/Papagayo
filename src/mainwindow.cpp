@@ -177,6 +177,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 	QFileInfo info(filePath);
 	QString extn = info.suffix().toLower();
+    if (extn == "wav" || extn == "pgo" || extn == "aif" || extn == "aiff")
 		event->acceptProposedAction();
 }
 
@@ -193,6 +194,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 	QFileInfo info(filePath);
 	QString extn = info.suffix().toLower();
+    if (extn == "wav" || extn == "pgo" || extn == "aif" || extn == "aiff")
 	{
 		event->acceptProposedAction();
 		if (IsOKToCloseDocument())
