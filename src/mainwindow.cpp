@@ -298,6 +298,22 @@ void MainWindow::onHelpAboutPapagayo()
 	QMessageBox::about(this, tr("About Papagayo"), msg);
 }
 
+void MainWindow::onFileExit(){
+   if (IsOKToCloseDocument())
+    {
+        if (fDoc)
+        {
+            delete fDoc;
+            fDoc = NULL;
+        }
+        SaveSettings();
+        QApplication::quit();
+
+
+    }
+
+}
+
 void MainWindow::onFileOpen()
 {
 	if (!IsOKToCloseDocument())
@@ -350,7 +366,7 @@ void MainWindow::onFileSaveAs()
 	}
 	QString filePath = QFileDialog::getSaveFileName(this,
 													tr("Save"), name,
-													tr("Papgayo files (*.pgo)"));
+                                                    tr("Papagayo files (*.pgo)"));
 	if (filePath.isEmpty())
 		return;
 

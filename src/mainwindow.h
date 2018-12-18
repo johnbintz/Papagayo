@@ -36,6 +36,7 @@ public slots:
 
 private slots:
 	void onHelpAboutPapagayo();
+    void onFileExit();
 	void onFileOpen();
 	void onFileSave();
 	void onFileSaveAs();
