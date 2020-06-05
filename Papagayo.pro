@@ -156,10 +156,6 @@ RC_FILE = win/papagayo.rc
 
 OBJECTIVE_SOURCES +=
 
-# just testing
-DESTDIR += g:\devtest
-
 extra_libs.files = MY_DLL_FILES
-extra_libs.path = $$DESTDIR
 
 INSTALLS += extra_libs
