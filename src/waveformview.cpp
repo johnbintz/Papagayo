@@ -444,8 +444,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 			{
 				fDoc->fDirty = true;
 				fSelectedPhrase->fStartFrame = frame;
-				if (fSelectedPhrase->fStartFrame > fSelectedPhrase->fEndFrame - 1)
-					fSelectedPhrase->fStartFrame = fSelectedPhrase->fEndFrame - 1;
+				if (fSelectedPhrase->fStartFrame > fSelectedPhrase->fEndFrame)
+					fSelectedPhrase->fStartFrame = fSelectedPhrase->fEndFrame;
 				fDoc->fCurrentVoice->RepositionPhrase(fSelectedPhrase, fDoc->Duration());
 				needUpdate = true;
 			}
@@ -456,8 +456,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 			{
 				fDoc->fDirty = true;
 				fSelectedPhrase->fEndFrame = frame;
-				if (fSelectedPhrase->fEndFrame < fSelectedPhrase->fStartFrame + 1)
-					fSelectedPhrase->fEndFrame = fSelectedPhrase->fStartFrame + 1;
+				if (fSelectedPhrase->fEndFrame < fSelectedPhrase->fStartFrame)
+					fSelectedPhrase->fEndFrame = fSelectedPhrase->fStartFrame;
 				fDoc->fCurrentVoice->RepositionPhrase(fSelectedPhrase, fDoc->Duration());
 				needUpdate = true;
 			}
@@ -469,8 +469,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 				fDoc->fDirty = true;
 				fSelectedPhrase->fStartFrame += frame - fOldFrame;
 				fSelectedPhrase->fEndFrame += frame - fOldFrame;
-				if (fSelectedPhrase->fEndFrame < fSelectedPhrase->fStartFrame + 1)
-					fSelectedPhrase->fEndFrame = fSelectedPhrase->fStartFrame + 1;
+				if (fSelectedPhrase->fEndFrame < fSelectedPhrase->fStartFrame)
+					fSelectedPhrase->fEndFrame = fSelectedPhrase->fStartFrame;
 				fDoc->fCurrentVoice->RepositionPhrase(fSelectedPhrase, fDoc->Duration());
 				needUpdate = true;
 			}
@@ -484,8 +484,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 			{
 				fDoc->fDirty = true;
 				fSelectedWord->fStartFrame = frame;
-				if (fSelectedWord->fStartFrame > fSelectedWord->fEndFrame - 1)
-					fSelectedWord->fStartFrame = fSelectedWord->fEndFrame - 1;
+				if (fSelectedWord->fStartFrame > fSelectedWord->fEndFrame)
+					fSelectedWord->fStartFrame = fSelectedWord->fEndFrame;
 				fParentPhrase->RepositionWord(fSelectedWord);
 				needUpdate = true;
 			}
@@ -496,8 +496,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 			{
 				fDoc->fDirty = true;
 				fSelectedWord->fEndFrame = frame;
-				if (fSelectedWord->fEndFrame < fSelectedWord->fStartFrame + 1)
-					fSelectedWord->fEndFrame = fSelectedWord->fStartFrame + 1;
+				if (fSelectedWord->fEndFrame < fSelectedWord->fStartFrame)
+					fSelectedWord->fEndFrame = fSelectedWord->fStartFrame;
 				fParentPhrase->RepositionWord(fSelectedWord);
 				needUpdate = true;
 			}
@@ -509,8 +509,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 				fDoc->fDirty = true;
 				fSelectedWord->fStartFrame += frame - fOldFrame;
 				fSelectedWord->fEndFrame += frame - fOldFrame;
-				if (fSelectedWord->fEndFrame < fSelectedWord->fStartFrame + 1)
-					fSelectedWord->fEndFrame = fSelectedWord->fStartFrame + 1;
+				if (fSelectedWord->fEndFrame < fSelectedWord->fStartFrame)
+					fSelectedWord->fEndFrame = fSelectedWord->fStartFrame;
 				fParentPhrase->RepositionWord(fSelectedWord);
 				needUpdate = true;
 			}
