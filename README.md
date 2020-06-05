@@ -34,7 +34,7 @@ July 8, 2014
 ### Ubuntu
 
 ```
-sudo apt install qmake-qt5 build-essential qtmultimedia5-dev
+sudo apt install qmake-qt5 build-essential qtmultimedia5-dev libsndfile1-dev
 mkdir build
 cd build
 qmake -h # make sure you are using the qt5 qmake

@@ -2,7 +2,7 @@
 #define AUDIOEXTRACTOR_H
 
 #include "pg_config.h"
-#include "sndfile.h"
+#include <sndfile.h>
 
 //
 // This class is the general audio extractor that wraps the library specific extractors.
