@@ -94,6 +94,8 @@ void WaveformView::SetDocument(LipsyncDoc *doc)
 		}
 		if (fNumSamples < 1)
 			fNumSamples = 1;
+    // add some extra frames on the end
+    fNumSamples *= 2;
 		fAmp = new real[fNumSamples];
 		time = 0.0f;
 		int32 i = 0;
@@ -105,6 +107,10 @@ void WaveformView::SetDocument(LipsyncDoc *doc)
 			time += sampleDur;
 			i++;
 		}
+    while (i < fNumSamples) {
+      fAmp[i] = 0;
+      i++;
+    }
 		// normalize amplitudes
 		maxAmp = 0.95f / maxAmp;
 		for (i = 0; i < fNumSamples; i++)

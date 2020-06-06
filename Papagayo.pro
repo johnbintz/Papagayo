@@ -68,4 +68,7 @@ OBJECTIVE_SOURCES +=
 extra_libs.files = MY_DLL_FILES
 extra_libs.path = $$DESTDIR
 
-INSTALLS += extra_libs
+target.path = $$(PREFIX)/bin
+target.files = Papagayo
+
+INSTALLS += target
