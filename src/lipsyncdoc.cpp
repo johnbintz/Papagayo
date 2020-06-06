@@ -703,7 +703,6 @@ void LipsyncDoc::OpenAudio(const QString &path)
 	}
 	else
 	{
-		fFps = 24;
 		fAudioExtractor = new AudioExtractor(path.toUtf8().data());
 		if (fAudioExtractor->IsValid())
 		{

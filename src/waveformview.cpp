@@ -115,6 +115,14 @@ void WaveformView::SetDocument(LipsyncDoc *doc)
 		maxAmp = 0.95f / maxAmp;
 		for (i = 0; i < fNumSamples; i++)
 			fAmp[i] *= maxAmp;
+
+    // reset things
+	fDragging = false;
+	fDoubleClick = false;
+	fCurFrame = 0;
+	fOldFrame = 0;
+	fScrubFrame = 0;
+	fAudioStopFrame = -1;
 	}
 
 	updateGeometry();
