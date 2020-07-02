@@ -1,13 +1,8 @@
-Papagayo
-========
+# Papagayo
 
 Lipsync tool for animators
 
-
-
-
-Papagayo 2.0b1
-------------------------------------------------------------
+## Papagayo 2.0b1
 
 This is a beta release of Papagayo - please excuse the lack of documentation.
 (Documentation is provided for using the application, but not much about building it.)
@@ -31,9 +26,19 @@ The current version of Papagayo can always be found here:
 
 http://www.lostmarble.com/papagayo/index.shtml
 
-
-
-
-
 Mike Clifton
 July 8, 2014
+
+## Building
+
+### Ubuntu
+
+```
+sudo apt install qmake-qt5 build-essential qtmultimedia5-dev libsndfile1-dev
+mkdir build
+cd build
+qmake -h # make sure you are using the qt5 qmake
+         # the help output will tell you if you are or not
+qmake ../Papagayo.pro
+make -j3
+```

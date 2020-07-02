@@ -1,7 +1,7 @@
 #ifndef LIPSYNCDOC_H
 #define LIPSYNCDOC_H
 
-#include <QMediaPlayer>
+#include <QtMultimedia/QMediaPlayer>
 
 #include "audioextractor.h"
 
@@ -52,6 +52,7 @@ public:
 	int32					fStartFrame, fEndFrame;
 	int32					fTop, fBottom;
 	QList<LipsyncWord *>	fWords;
+    QString                 fMood;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,10 +65,11 @@ public:
 
 	void Open(QTextStream &in);
 	void Save(QTextStream &out);
-	void Export(QString path);
+    void Export(QString path, QString imageSuffix);
 	void RunBreakdown(QString language, int32 audioDuration);
 	void RepositionPhrase(LipsyncPhrase *phrase, int32 audioDuration);
 	QString GetPhonemeAtFrame(int32 frame);
+    QString GetMoodAtFrame(int32 frame);
 
 	QString					fName;
 	QString					fText;
@@ -91,7 +93,7 @@ public:
 	void RebuildAudioSamples();
 
 	int32 Fps() { return fFps; }
-	void SetFps(int32 fps);
+    void SetFps(int32 fps);
 	QMediaPlayer *GetAudioPlayer();
 	AudioExtractor *GetAudioExtractor();
 	int32 Duration() { return fAudioDuration; }
@@ -113,6 +115,10 @@ public:
 	bool					fDirty;
 	QList<LipsyncVoice *>	fVoices;
 	LipsyncVoice			*fCurrentVoice;
+    QString                 fImageSuffix;
+    bool                    fRepeat;
+    LipsyncPhrase           *fRepeatPhrase;
+    LipsyncWord             *fRepeatWord;
 
 	static QList<QString>				Phonemes;
 	static QHash<QString, QString>		DictionaryToPhonemeMap;

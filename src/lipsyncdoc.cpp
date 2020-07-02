@@ -79,6 +79,7 @@ LipsyncPhrase::LipsyncPhrase()
 	fStartFrame = 0;
 	fEndFrame = 0;
 	fTop = fBottom = 0;
+    fMood = "";
 }
 
 LipsyncPhrase::~LipsyncPhrase()
@@ -194,20 +195,20 @@ void LipsyncVoice::Open(QTextStream &in)
 				word->fText = strList.at(0);
 				word->fStartFrame = strList.at(1).toInt();
 				word->fEndFrame = strList.at(2).toInt();
-				numPhonemes = strList.at(3).toInt();
-			}
-			for (int ph = 0; ph < numPhonemes; ph++)
-			{
-				LipsyncPhoneme *phoneme = new LipsyncPhoneme;
-				str = in.readLine().trimmed();
-				QStringList strList = str.split(' ', QString::SkipEmptyParts);
-				if (strList.size() >= 2)
-				{
-					phoneme->fFrame = strList.at(0).toInt();
-					phoneme->fText = strList.at(1);
-				}
-				word->fPhonemes << phoneme;
-			} // for ph
+                numPhonemes = strList.at(3).toInt();
+                for (int ph = 0; ph < numPhonemes; ph++)
+                {
+                    LipsyncPhoneme *phoneme = new LipsyncPhoneme;
+                    str = in.readLine().trimmed();
+                    QStringList strList = str.split(' ', QString::SkipEmptyParts);
+                    if (strList.size() >= 2)
+                    {
+                        phoneme->fFrame = strList.at(0).toInt();
+                        phoneme->fText = strList.at(1);
+                    }
+                    word->fPhonemes << phoneme;
+                } // for ph
+            }
 			phrase->fWords << word;
 		} // for w
 		fPhrases << phrase;
@@ -243,7 +244,7 @@ void LipsyncVoice::Save(QTextStream &out)
 	} // for p
 }
 
-void LipsyncVoice::Export(QString path)
+void LipsyncVoice::Export(QString path, QString imgSuffix)
 {
 	QFile	f(path);
 
@@ -256,7 +257,7 @@ void LipsyncVoice::Export(QString path)
 
 	int		startFrame = 0;
 	int		endFrame = 1;
-	QString	phoneme, nextPhoneme;
+    QString	phoneme, nextPhoneme, mood, prevMood;
 
 	if (fPhrases.size() > 0)
 	{
@@ -267,23 +268,30 @@ void LipsyncVoice::Export(QString path)
 	if (startFrame > 1)
 	{
 		phoneme = "rest";
-		out << 1 << ' ' << "rest" << endl;
+        out << 1 << ' ' << "rest" << imgSuffix << endl;
 	}
 
 	for (int frame = startFrame; frame <= endFrame; frame++)
 	{
 		nextPhoneme = GetPhonemeAtFrame(frame);
+        mood = GetMoodAtFrame(frame);
+        if (mood == "_prev") {
+            mood = prevMood;
+        }
+        nextPhoneme = mood + nextPhoneme;
 		if (nextPhoneme != phoneme)
 		{
-			if (phoneme == "rest")
-			{ // export an extra "rest" phoneme at the end of a pause between words or phrases
-				out << frame << ' ' << phoneme << endl;
-			}
+//            if (phoneme == "rest")
+//			{ // export an extra "rest" phoneme at the end of a pause between words or phrases
+//                out << frame - 2 << ' ' <<  mood << phoneme << imgSuffix << endl;
+//			}
 			phoneme = nextPhoneme;
-			out << frame - 1 << ' ' << phoneme << endl;
+            out << frame - 1 << ' ' << phoneme << imgSuffix << endl;
 		}
+        prevMood = mood;
 	}
-	out << endFrame + 2 << ' ' << "rest" << endl;
+
+    out << endFrame + 2 << ' ' << prevMood << "rest" << imgSuffix << endl;
 }
 
 void LipsyncVoice::RunBreakdown(QString language, int32 audioDuration)
@@ -479,6 +487,19 @@ QString LipsyncVoice::GetPhonemeAtFrame(int32 frame)
 	return "rest";
 }
 
+QString LipsyncVoice::GetMoodAtFrame(int32 frame)
+{
+    for (int32 i = 0; i < fPhrases.size(); i++)
+    {
+        LipsyncPhrase *phrase = fPhrases[i];
+        if (frame >= phrase->fStartFrame && frame <= phrase->fEndFrame)
+        { // we found the phrase that contains this frame
+            return phrase->fMood;
+        }
+    }
+    return "_prev";
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 QList<QString>				LipsyncDoc::Phonemes;
@@ -494,6 +515,10 @@ LipsyncDoc::LipsyncDoc()
 	fAudioExtractor = NULL;
 	fMaxAmplitude = 1.0f;
 	fCurrentVoice = NULL;
+    fImageSuffix = "";
+    fRepeat = false;
+    fRepeatPhrase = NULL;
+    fRepeatWord = NULL;
 }
 
 LipsyncDoc::~LipsyncDoc()
@@ -678,7 +703,6 @@ void LipsyncDoc::OpenAudio(const QString &path)
 	}
 	else
 	{
-		fFps = 24;
 		fAudioExtractor = new AudioExtractor(path.toUtf8().data());
 		if (fAudioExtractor->IsValid())
 		{

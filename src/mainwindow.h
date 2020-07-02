@@ -29,17 +29,21 @@ protected:
 	void closeEvent(QCloseEvent *event);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
 	void updateActions();
 
 private slots:
 	void onHelpAboutPapagayo();
+    void onFileExit();
 	void onFileOpen();
 	void onFileSave();
 	void onFileSaveAs();
 	void onPlay();
 	void onStop();
+    void onVolumeChange(int value);
+    void onRepeat();
 	void onFpsChange(QString text);
 	void onNewVoice();
 	void onDeleteVoice();
@@ -49,6 +53,10 @@ private slots:
 	void onVoiceTextChanged();
 	void onBreakdown();
 	void onExport();
+
+    void onNone();
+    void onPng();
+    void onGif();
 
 private:
 	void RebuildVoiceList();
